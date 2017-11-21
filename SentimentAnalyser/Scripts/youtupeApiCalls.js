@@ -1,6 +1,6 @@
 ﻿
 
-//Comment visszaterites/
+//Comment visszaterites/1
 $(document).ready(function () {
     $("#proba").click(function (e) {
         $.ajax({
