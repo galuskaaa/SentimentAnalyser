@@ -1,13 +1,13 @@
-﻿using SentimentAnalyser.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Web.Mvc;
+using VaderSharp;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using System.Web.Mvc;
-using VaderSharp;
+
 
 
 namespace SentimentAnalyser.Controllers
@@ -32,6 +32,7 @@ namespace SentimentAnalyser.Controllers
             double neutralScore = 0;
             int commentCount = values.Count;
             SentimentIntensityAnalyzer analyzer = new SentimentIntensityAnalyzer();
+
             foreach (var comment in values )
             {
                 var results = analyzer.PolarityScores(comment);
@@ -39,11 +40,7 @@ namespace SentimentAnalyser.Controllers
                 negativeScore += results.Negative / commentCount;
                 neutralScore += results.Compound / commentCount;
             }
-            //Debug.WriteLine("Analysis score||||||||||||||||||||||||||||",(score).ToString());
-            //return Json(new { Result = String.Format("Analysis score:",values.Count) });
-            //return new EmptyResult();
 
-            
                 var data = new[]
                 {
                   new { name = "Positive", y = positiveScore },
@@ -52,6 +49,7 @@ namespace SentimentAnalyser.Controllers
                 
                 };
 
+        
             return Json(data, JsonRequestBehavior.AllowGet);
 
         }

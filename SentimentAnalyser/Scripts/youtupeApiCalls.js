@@ -1,71 +1,139 @@
 ﻿
 
-
-//Comment lekerese,success eseten POST a controllerhez.
-/*$(document).ready(function () {
+$(document).ready(function () {
     $("#proba").click(function (e) {
         $.ajax({
             dataType: "json",
             type: 'GET',
             url: "https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&maxResults=50&videoId=lyZQPjUT5B4&fields=items%2Fsnippet%2FtopLevelComment%2Fsnippet%2FtextOriginal&key=AIzaSyBb1hVnsuI_8HLkANAt7CCPUmBiygPzAnE",
-            success: function (result)
-            {
+            success: function (result) {
+                //arrayLength = in case of a succesfull request a JSON object with 50 comments is returned.
                 var arrayLength = result.items.length;
                 var myStringArray = [];
+                //we loop till there is no element left in the returned object in order to retrieve only the comment.
                 for (var i = 0; i < arrayLength; i++)
                 {
+                    //myStringArray -> an array containing strings/comments
                     myStringArray[i] = (result.items[i].snippet.topLevelComment.snippet.textOriginal);
                 }
                 
-                
-                $.ajax({
+                //We are still in the GET method success callback/now we will send a POST to the mvc controller with the pure text comments
+                $.ajax
+                    ({
                     type: "POST",
                     contentType: "application/json; charset=utf-8",
                     url: "YoutubeApi/getComments",
                     datatype: "json",
                     data: JSON.stringify(myStringArray),
                     traditional: true,
+                    //in case of a succesfull post the data is sent to the controller which returns a json.This json contains the result we need in order 
+                    //to render the highchart
                     success: function (result)
                     {
-
-                        alert("SUCCESS = " + result.d);
+                        sentimentAnalysisData(result); //calling the function which will construct the pie chart
                     },
                     error: function (xmlhttprequest, textstatus, errorthrown)
                     {
-                        alert(" conection to the server failed ");
                         console.log("error: " + errorthrown);
                         console.log(myStringArray);
                     }
-                });
+                });//end of the post request
 
 
-            }
+            }//end of the GET success callback
 
-        });
+        });//end of the ajax function
 
-    });
+    });//end of the onClick method
 });
-*/
 
-//HighChart felepitese.A sikeres POST kuldes eseten,a controllerben megjelenik egy Lista amely tartalmazza a commenteket,majd az erzelemtesztelo
-//kiertekeli ezeket es egy JSON objektumot kuld vissza.Ha ez sikeres,akkor felepitem a Highchartot a visszakuldott adatbol.
 
-function sentimentAnalysisData(data)
-    //$(document).ready(function ()
-{
+//Construction of a pie chart with data returned from the controller
+function sentimentAnalysisData(data) {
     var chart = new Highcharts.Chart({
-        chart: {
+        chart:
+        {
             plotBackgroundColor: null,
             plotBorderWidth: null,
             plotShadow: false,
             type: 'pie',
             renderTo: 'highchart'
         },
-        credits: {
+        credits:
+        {
             enabled: false
         },
-        title: {
+        title:
+        {
             text: 'Sentiment Analysis'
+        },
+        tooltip:
+        {
+            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                    style: {
+                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                    }
+                }
+            }
+        },
+        series:
+            [{
+                data: data
+            }]
+
+    })
+};
+
+
+//Youtube Api call to get the video Like/Dislike ammount
+
+
+
+$(document).ready(function () {
+    $("#proba").click(function (e)
+    {
+        $.ajax({
+            dataType: "json",
+            type: 'GET',
+            url: "https://www.googleapis.com/youtube/v3/videos?part=statistics&id=lyZQPjUT5B4&fields=items(statistics(dislikeCount%2ClikeCount))&key=AIzaSyBb1hVnsuI_8HLkANAt7CCPUmBiygPzAnE",
+            success: function (result)
+            {
+                var dislikeCounter = result.items[0].statistics.dislikeCount;
+                var likeCounter = result.items[0].statistics.likeCount;
+                likeDislikeChart(likeCounter, dislikeCounter);
+            },
+            error: function (xmlhttprequest, textstatus, errorthrown) {
+                console.log("error: " + errorthrown);
+                
+            }
+        });
+    });
+});
+
+
+
+//Construction of a pie chart that display the like/dislike ratio
+function likeDislikeChart(likes,dislikes) {
+    var chart = new Highcharts.Chart({
+        chart:
+        {
+            
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+            type: 'pie',
+            renderTo: 'highchart1'
+        },
+        title: {
+            text: 'Like/Dislike ratio'
         },
         tooltip: {
             pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -84,54 +152,19 @@ function sentimentAnalysisData(data)
             }
         },
         series: [{
-            data: data
+            colorByPoint: true,
+            data: [{
+                name: 'Likes',
+                y: Number(likes)
+            },
+            {
+                name: 'Dislikes',
+                y: Number(dislikes)
+                
+            }]
         }]
-           
-        //});
-    })
-};
-
-$(document).ready(function () {
-    $("#proba").click(function (e) {
-        $.ajax({
-            dataType: "json",
-            type: 'GET',
-            url: "https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&maxResults=50&videoId=lyZQPjUT5B4&fields=items%2Fsnippet%2FtopLevelComment%2Fsnippet%2FtextOriginal&key=AIzaSyBb1hVnsuI_8HLkANAt7CCPUmBiygPzAnE",
-            success: function (result) {
-                var arrayLength = result.items.length;
-                var myStringArray = [];
-                for (var i = 0; i < arrayLength; i++) {
-                    myStringArray[i] = (result.items[i].snippet.topLevelComment.snippet.textOriginal);
-                }
-
-
-                $.ajax({
-                    type: "POST",
-                    contentType: "application/json; charset=utf-8",
-                    url: "YoutubeApi/getComments",
-                    datatype: "json",
-                    data: JSON.stringify(myStringArray),
-                    traditional: true,
-                    success: function (result) {
-                        sentimentAnalysisData(result);
-                        alert("SUCCESS = " + result.d);
-                    },
-                    error: function (xmlhttprequest, textstatus, errorthrown) {
-                        alert(" conection to the server failed ");
-                        console.log("error: " + errorthrown);
-                        console.log(myStringArray);
-                    }
-                });
-
-
-            }
-
-        });
-
     });
-});
-
-
+}
 
 
 
