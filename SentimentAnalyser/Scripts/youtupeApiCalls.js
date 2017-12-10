@@ -2,10 +2,11 @@
 
 $(document).ready(function () {
     $("#proba").click(function (e) {
+        var requestedVideoUrl = document.getElementById("videoUrl").value;
         $.ajax({
             dataType: "json",
             type: 'GET',
-            url: "https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&maxResults=50&videoId=lyZQPjUT5B4&fields=items%2Fsnippet%2FtopLevelComment%2Fsnippet%2FtextOriginal&key=AIzaSyBb1hVnsuI_8HLkANAt7CCPUmBiygPzAnE",
+            url: "https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&maxResults=50&videoId="+ requestedVideoUrl +"&fields=items%2Fsnippet%2FtopLevelComment%2Fsnippet%2FtextOriginal&key=AIzaSyBb1hVnsuI_8HLkANAt7CCPUmBiygPzAnE",
             success: function (result) {
                 //arrayLength = in case of a succesfull request a JSON object with 50 comments is returned.
                 var arrayLength = result.items.length;
@@ -100,10 +101,11 @@ function sentimentAnalysisData(data) {
 $(document).ready(function () {
     $("#proba").click(function (e)
     {
+        var requestedVideoUrl = document.getElementById("videoUrl").value;
         $.ajax({
             dataType: "json",
             type: 'GET',
-            url: "https://www.googleapis.com/youtube/v3/videos?part=statistics&id=lyZQPjUT5B4&fields=items(statistics(dislikeCount%2ClikeCount))&key=AIzaSyBb1hVnsuI_8HLkANAt7CCPUmBiygPzAnE",
+            url: "https://www.googleapis.com/youtube/v3/videos?part=statistics&id="+ requestedVideoUrl + "&fields=items(statistics(dislikeCount%2ClikeCount))&key=AIzaSyBb1hVnsuI_8HLkANAt7CCPUmBiygPzAnE",
             success: function (result)
             {
                 var dislikeCounter = result.items[0].statistics.dislikeCount;
