@@ -1,6 +1,7 @@
 ﻿using SentimentAnalyser.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -69,18 +70,35 @@ namespace SentimentAnalyser.Helper
         {
             double positiveScore = 0;
             double negativeScore = 0;
+            double neutralScore = 0;
             NaiveAnalysisAction naiveAnalysisAction = new NaiveAnalysisAction();
+            CommentModel commentModel = new CommentModel();
             foreach (var comment in values)
             {
                 var results = naiveAnalysisAction.GetScore(comment);
-                if (results.Sentiment > 0) positiveScore += 1;
-                if (results.Sentiment < 0) negativeScore += 1;
+                if (results.Sentiment > 0)
+                {
+                    positiveScore += 1;
+                    commentModel.Positive.Add(comment);
+                    
+                }
 
+                else if (results.Sentiment < 0)
+                {
+                    negativeScore += 1;
+                    commentModel.Negative.Add(comment);
+                }
+                else if (results.Sentiment == 0)
+                {
+                    neutralScore += 1;
+                    commentModel.Neutral.Add(comment);
+                }
             }
             var data = new[]
            {
                   new { name = "Positive", y = positiveScore },
-                  new { name = "Negative", y = negativeScore }
+                  new { name = "Negative", y = negativeScore },
+                  new { name = "Neutral",  y = neutralScore}
                   
             };
             return data;

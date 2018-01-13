@@ -21,7 +21,7 @@
                     ({
                     type: "POST",
                     contentType: "application/json; charset=utf-8",
-                    url: "NaiveAnalysis/evaluateNaiveSentiment",
+                    url: "YoutubeApi/getComments",
                     datatype: "json",
                     data: JSON.stringify(myStringArray),
                     traditional: true,
@@ -38,7 +38,25 @@
                         console.log(myStringArray);
                     }
                 });//end of the post request
+                $.ajax
+                    ({
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        url: "NaiveSentiment/naiveResult",
+                        datatype: "json",
+                        data: JSON.stringify(myStringArray),
+                        traditional: true,
+                        //in case of a succesfull post the data is sent to the controller which returns a json.This json contains the result we need in order 
+                        //to render the highchart
+                        success: function (result) {
+                            sentimentNaiveData(result); //calling the function which will construct the pie chart
 
+                        },
+                        error: function (xmlhttprequest, textstatus, errorthrown) {
+                            console.log("error: " + errorthrown);
+                            console.log(myStringArray);
+                        }
+                    });//end of the post request
 
             }//end of the GET success callback
 
@@ -167,5 +185,45 @@ function likeDislikeChart(likes,dislikes) {
     });
 }
 
+function sentimentNaiveData(data) {
+    var chart = new Highcharts.Chart({
+        chart:
+        {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+            type: 'pie',
+            renderTo: 'highchart3'
+        },
+        credits:
+        {
+            enabled: false
+        },
+        title:
+        {
+            text: 'Sentiment Analysis'
+        },
+        tooltip:
+        {
+            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                    style: {
+                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                    }
+                }
+            }
+        },
+        series:
+            [{
+                data: data
+            }]
 
-
+    })
+};

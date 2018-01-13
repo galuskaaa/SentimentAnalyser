@@ -304,6 +304,7 @@
     <Compile Include="Helper\CommentAnalysisAction.cs" />
     <Compile Include="Helper\NaiveAnalysisAction.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\CommentModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\ScoreModel.cs" />

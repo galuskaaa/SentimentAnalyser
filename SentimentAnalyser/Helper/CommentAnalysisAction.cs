@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using VaderSharp;
@@ -25,17 +26,29 @@ namespace SentimentAnalyser.Helper
 
             foreach (var comment in values)
             {
+
+               
                 var results = analyzer.PolarityScores(comment);
-                positiveScore += results.Positive / commentCount;
-                negativeScore += results.Negative / commentCount;
-                neutralScore += results.Compound / commentCount;
+                if (results.Compound > 0)
+                {
+                    positiveScore += 1;
+                }
+                else if (results.Compound == 0)
+                {
+                    neutralScore += 1;
+                }
+                else
+                {
+                    negativeScore += 1;
+                }
+                
             }
 
             var data = new[]
             {
                   new { name = "Positive", y = positiveScore },
                   new { name = "Negative", y = negativeScore },
-                  new { name = "Neutral" , y = neutralScore }
+                  new { name = "Neutral",  y = neutralScore}
 
             };
 
