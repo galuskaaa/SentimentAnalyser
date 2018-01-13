@@ -296,14 +296,17 @@
     <Compile Include="Controllers\GoogleMethodController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\NaiveSentimentController.cs" />
     <Compile Include="Controllers\YoutubeApiController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helper\CommentAnalysisAction.cs" />
+    <Compile Include="Helper\NaiveAnalysisAction.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\ScoreModel.cs" />
     <Compile Include="Models\YoutubeDataModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -418,6 +421,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\GoogleMethod\" />
+    <Folder Include="Views\NaiveSentiment\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

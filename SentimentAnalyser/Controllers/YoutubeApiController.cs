@@ -29,6 +29,7 @@ namespace SentimentAnalyser.Controllers
             CommentAnalysisAction commentAnalysisAction = new CommentAnalysisAction();
             return Json(commentAnalysisAction.evaluateCommentSentiment(values), JsonRequestBehavior.AllowGet);
 
+
         }
     }
 }

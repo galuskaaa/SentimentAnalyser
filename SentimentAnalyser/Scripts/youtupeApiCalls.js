@@ -1,6 +1,4 @@
-﻿
-
-$(document).ready(function () {
+﻿$(document).ready(function () {
     $("#proba").click(function (e) {
         var requestedVideoUrl = document.getElementById("videoUrl").value;
         $.ajax({
@@ -23,7 +21,7 @@ $(document).ready(function () {
                     ({
                     type: "POST",
                     contentType: "application/json; charset=utf-8",
-                    url: "YoutubeApi/getComments",
+                    url: "NaiveAnalysis/evaluateNaiveSentiment",
                     datatype: "json",
                     data: JSON.stringify(myStringArray),
                     traditional: true,
@@ -32,6 +30,7 @@ $(document).ready(function () {
                     success: function (result)
                     {
                         sentimentAnalysisData(result); //calling the function which will construct the pie chart
+                       
                     },
                     error: function (xmlhttprequest, textstatus, errorthrown)
                     {
@@ -167,7 +166,6 @@ function likeDislikeChart(likes,dislikes) {
         }]
     });
 }
-
 
 
 
