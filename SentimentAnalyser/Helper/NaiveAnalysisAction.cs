@@ -1,4 +1,5 @@
-﻿using SentimentAnalyser.Models;
+﻿using Newtonsoft.Json;
+using SentimentAnalyser.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -6,6 +7,8 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
+using System.Web.Http.Results;
+using System.Web.Mvc;
 
 namespace SentimentAnalyser.Helper
 {
@@ -15,13 +18,14 @@ namespace SentimentAnalyser.Helper
         private readonly IDictionary<string, int> wordDictionary;
         public IDictionary<string, int> Words { get { return wordDictionary; } }
         public int WordsCount { get { return wordDictionary.Count; } }
+        static  Dictionary<string, int> commentAndValue = new Dictionary<string, int>();
 
 
 
 
 
         public NaiveAnalysisAction()
-        {
+        {   
             var filePath = @"D:\Licens\SentimentAnalyser\SentimentAnalyser\AFINN-111.txt";
             wordDictionary = new Dictionary<string, int>();
             using (var file = new StreamReader(filePath))
@@ -79,6 +83,7 @@ namespace SentimentAnalyser.Helper
                 if (results.Sentiment > 0)
                 {
                     positiveScore += 1;
+                    commentAndValue.Add(comment, 1);
                     commentModel.Positive.Add(comment);
                     
                 }
@@ -86,14 +91,19 @@ namespace SentimentAnalyser.Helper
                 else if (results.Sentiment < 0)
                 {
                     negativeScore += 1;
+                    commentAndValue.Add(comment, -1);
                     commentModel.Negative.Add(comment);
+
                 }
                 else if (results.Sentiment == 0)
                 {
                     neutralScore += 1;
+                    commentAndValue.Add(comment, 0);
                     commentModel.Neutral.Add(comment);
                 }
+
             }
+
             var data = new[]
            {
                   new { name = "Positive", y = positiveScore },
@@ -103,5 +113,24 @@ namespace SentimentAnalyser.Helper
             };
             return data;
         }
+
+
+
+
+
+
+
+
+ 
+        public String getCommentAndValues()
+        {
+            Debug.WriteLine("!!!!!!!!!!!!!");
+            foreach (KeyValuePair < string, int > entry in commentAndValue)
+{
+                Debug.WriteLine("!!!!!!!!!!!!!", entry.Key);
+            }
+            return JsonConvert.SerializeObject(commentAndValue);  
+        }
+
     }
 }

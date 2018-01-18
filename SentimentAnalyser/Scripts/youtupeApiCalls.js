@@ -30,6 +30,18 @@
                     success: function (result)
                     {
                         sentimentAnalysisData(result); //calling the function which will construct the pie chart
+                        $.ajax({
+                            //dataType: "json",
+                            type: 'GET',
+                            url: "NaiveSentiment/commentValues",
+                            success: function (result) {
+                                alert(result);
+                            },
+                            error: function (xmlhttprequest, textstatus, errorthrown) {
+                                alert("error: " + errorthrown);
+                                
+                            }
+                        })
                        
                     },
                     error: function (xmlhttprequest, textstatus, errorthrown)

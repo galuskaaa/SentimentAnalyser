@@ -23,5 +23,15 @@ namespace SentimentAnalyser.Controllers
             return Json(naiveAnalysisAction.evaluateNaiveSentiment(values), JsonRequestBehavior.AllowGet);
 
         }
+
+        [System.Web.Mvc.HttpGet]
+        public JsonResult commentValues()
+        {
+
+            NaiveAnalysisAction naiveAnalysisAction = new NaiveAnalysisAction();
+            return Json(naiveAnalysisAction.getCommentAndValues(), JsonRequestBehavior.AllowGet);
+
+        }
+
     }
 }
