@@ -122,14 +122,9 @@ namespace SentimentAnalyser.Helper
 
 
  
-        public String getCommentAndValues()
+        public Dictionary<string,int> getCommentAndValues()
         {
-            Debug.WriteLine("!!!!!!!!!!!!!");
-            foreach (KeyValuePair < string, int > entry in commentAndValue)
-{
-                Debug.WriteLine("!!!!!!!!!!!!!", entry.Key);
-            }
-            return JsonConvert.SerializeObject(commentAndValue);  
+            return commentAndValue;  
         }
 
     }
