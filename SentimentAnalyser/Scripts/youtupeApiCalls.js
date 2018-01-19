@@ -21,7 +21,7 @@
                     ({
                     type: "POST",
                     contentType: "application/json; charset=utf-8",
-                    url: "YoutubeApi/getComments",
+                    url: "VaderSharp/getComments",
                     datatype: "json",
                     data: JSON.stringify(myStringArray),
                     traditional: true,
@@ -37,23 +37,20 @@
                             contentType: "application/json; charset=utf-8",
                             datatype: "json",
                             success: function (result) {
-                                $('#naiveComments').append("<ul id='newList'></ul>");
+                                $('#naiveComments').append("<ul id='newList'></ul>").addClass("list-group");;
                                 var keys = Object.keys(result);
                                 for (var i = 0; i < keys.length; i++) {
                                     var key = keys[i];
                                     console.log(result[key]);
-                                    if (result[key] == 1)
-                                    {
+                                    if (result[key] == 1) {
                                         console.log("hereeeeee");
-                                        $("<li>" + key + "</li>").appendTo("#newList").addClass("positive");
+                                        $("<li>" + key + "</li>").appendTo("#newList").addClass("list-group-item list-group-item-success");
                                     }
-                                    else if (result[key] == -1)
-                                    {
-                                        $("<li>" + key + "</li>").appendTo("#newList").addClass("negative");
+                                    else if (result[key] == -1) {
+                                        $("<li>" + key + "</li>").appendTo("#newList").addClass("list-group-item list-group-item-danger");
                                     }
-                                    else
-                                    {
-                                        $("<li>" + key + "</li>").appendTo("#newList").addClass("neutral");
+                                    else {
+                                        $("<li>" + key + "</li>").appendTo("#newList").addClass("list-group-item");
                                     }
                                 
                                    
@@ -61,24 +58,24 @@
                                 $.ajax({
                                     //dataType: "json",
                                     type: 'GET',
-                                    url: "YoutubeApi/vaderCommentValues",
+                                    url: "VaderSharp/vaderCommentValues",
                                     contentType: "application/json; charset=utf-8",
                                     datatype: "json",
                                     success: function (result) {
-                                        $('#vaderComments').append("<ul id='newList'></ul>");
+                                        $('#vaderComments').append("<ul id='newList'></ul>").addClass("list-group");
                                         var keys = Object.keys(result);
                                         for (var i = 0; i < keys.length; i++) {
                                             var key = keys[i];
                                             console.log(result[key]);
                                             if (result[key] == 1) {
                                                 console.log("hereeeeee");
-                                                $("<li>" + key + "</li>").appendTo("#newList").addClass("positive");
+                                                $("<li>" + key + "</li>").appendTo("#newList").addClass("list-group-item list-group-item-success");
                                             }
                                             else if (result[key] == -1) {
-                                                $("<li>" + key + "</li>").appendTo("#newList").addClass("negative");
+                                                $("<li>" + key + "</li>").appendTo("#newList").addClass("list-group-item list-group-item-danger");
                                             }
                                             else {
-                                                $("<li>" + key + "</li>").appendTo("#newList").addClass("neutral");
+                                                $("<li>" + key + "</li>").appendTo("#newList").addClass("list-group-item");
                                             }
 
 
@@ -144,7 +141,7 @@ function sentimentAnalysisData(data) {
             plotBorderWidth: null,
             plotShadow: false,
             type: 'pie',
-            renderTo: 'highchart'
+            renderTo: 'highchart1'
         },
         credits:
         {
@@ -152,7 +149,7 @@ function sentimentAnalysisData(data) {
         },
         title:
         {
-            text: 'Sentiment Analysis'
+            text: 'VaderSharp Analysis'
         },
         tooltip:
         {
@@ -218,7 +215,7 @@ function likeDislikeChart(likes,dislikes) {
             plotBorderWidth: null,
             plotShadow: false,
             type: 'pie',
-            renderTo: 'highchart1'
+            renderTo: 'highchart'
         },
         title: {
             text: 'Like/Dislike ratio'
@@ -270,7 +267,7 @@ function sentimentNaiveData(data) {
         },
         title:
         {
-            text: 'Sentiment Analysis'
+            text: ' Naive Analysis'
         },
         tooltip:
         {

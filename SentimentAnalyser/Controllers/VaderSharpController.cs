@@ -12,35 +12,30 @@ using SentimentAnalyser.Helper;
 namespace SentimentAnalyser.Controllers
 {
 
-    public class YoutubeApiController : Controller
+    public class VaderSharpController : Controller
     {
 
         public ActionResult Index()
         {
             return View();
-          
         }
 
 
         [System.Web.Mvc.HttpPost]
         public JsonResult getComments(List<String> values)
         {
-
             CommentAnalysisAction commentAnalysisAction = new CommentAnalysisAction();
             return Json(commentAnalysisAction.evaluateCommentSentiment(values), JsonRequestBehavior.AllowGet);
-
-
         }
+
 
         [System.Web.Mvc.HttpGet]
         public JsonResult vaderCommentValues()
         {
-
-
             CommentAnalysisAction commentAnalysisAction = new CommentAnalysisAction();
             return Json(commentAnalysisAction.getVaderCommentAndValues(), JsonRequestBehavior.AllowGet);
-
         }
+
     }
 }
 

@@ -10,7 +10,7 @@ namespace SentimentAnalyser.Helper
     public class CommentAnalysisAction
     {
 
-        static Dictionary<string, int> vaderCommentAndValue = new Dictionary<string, int>();
+        private static Dictionary<string, int> vaderCommentAndValue = new Dictionary<string, int>();
 
 
         public  CommentAnalysisAction()
@@ -27,11 +27,9 @@ namespace SentimentAnalyser.Helper
             double neutralScore = 0;
             int commentCount = values.Count;
             SentimentIntensityAnalyzer analyzer = new SentimentIntensityAnalyzer();
-
+            vaderCommentAndValue.Clear();
             foreach (var comment in values)
             {
-
-               
                 var results = analyzer.PolarityScores(comment);
                 if (results.Compound > 0)
                 {

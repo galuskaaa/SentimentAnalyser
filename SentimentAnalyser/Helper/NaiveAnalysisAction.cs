@@ -16,12 +16,9 @@ namespace SentimentAnalyser.Helper
     {
 
         private readonly IDictionary<string, int> wordDictionary;
-        public IDictionary<string, int> Words { get { return wordDictionary; } }
-        public int WordsCount { get { return wordDictionary.Count; } }
-        static  Dictionary<string, int> commentAndValue = new Dictionary<string, int>();
-
-
-
+        private IDictionary<string, int> Words { get { return wordDictionary; } }
+        private int WordsCount { get { return wordDictionary.Count; } }
+        private static  Dictionary<string, int> commentAndValue = new Dictionary<string, int>();
 
 
         public NaiveAnalysisAction()
@@ -70,6 +67,7 @@ namespace SentimentAnalyser.Helper
         }
 
 
+
         public Object[] evaluateNaiveSentiment(List<String> values)
         {
             double positiveScore = 0;
@@ -77,6 +75,7 @@ namespace SentimentAnalyser.Helper
             double neutralScore = 0;
             NaiveAnalysisAction naiveAnalysisAction = new NaiveAnalysisAction();
             CommentModel commentModel = new CommentModel();
+            commentAndValue.Clear();
             foreach (var comment in values)
             {
                 var results = naiveAnalysisAction.GetScore(comment);
@@ -84,10 +83,8 @@ namespace SentimentAnalyser.Helper
                 {
                     positiveScore += 1;
                     commentAndValue.Add(comment, 1);
-                    commentModel.Positive.Add(comment);
-                    
+                    commentModel.Positive.Add(comment);  
                 }
-
                 else if (results.Sentiment < 0)
                 {
                     negativeScore += 1;
@@ -104,7 +101,7 @@ namespace SentimentAnalyser.Helper
 
             }
 
-            var data = new[]
+           var data = new[]
            {
                   new { name = "Positive", y = positiveScore },
                   new { name = "Negative", y = negativeScore },
@@ -115,13 +112,6 @@ namespace SentimentAnalyser.Helper
         }
 
 
-
-
-
-
-
-
- 
         public Dictionary<string,int> getCommentAndValues()
         {
             return commentAndValue;  
