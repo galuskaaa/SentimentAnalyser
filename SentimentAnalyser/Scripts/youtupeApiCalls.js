@@ -1,22 +1,33 @@
 ﻿$(document).ready(function () {
     $("#proba").click(function (e) {
         var requestedVideoUrl = document.getElementById("videoUrl").value;
+        /**
+         * @param {String} url - an URL which targets the youtube API and includes the information that must be retrieved.In this case a list of comments
+         * @param {String} requestedVideoUrl - a String which is used as an uniq key of a youtube video.The value is retrieved from the user interface
+         * @param {Number} arrayLength - In case of a succesfull request the arrayLength variable will hold the number of comments returned
+         * @param {Object} myStringArray - An object which will hold the pure text of the returned comments
+         */
         $.ajax({
             dataType: "json",
             type: 'GET',
             url: "https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&maxResults=50&videoId="+ requestedVideoUrl +"&fields=items%2Fsnippet%2FtopLevelComment%2Fsnippet%2FtextOriginal&key=AIzaSyBb1hVnsuI_8HLkANAt7CCPUmBiygPzAnE",
-            success: function (result) {
-                //arrayLength = in case of a succesfull request a JSON object with 50 comments is returned.
+            success: function (result)
+            {
                 var arrayLength = result.items.length;
                 var myStringArray = [];
-                //we loop till there is no element left in the returned object in order to retrieve only the comment.
                 for (var i = 0; i < arrayLength; i++)
                 {
-                    //myStringArray -> an array containing strings/comments
+                    //* @param {Object} result - Contains the returned Json from the GET call mentioned above.In order to retrieve
+                    // the pure text we have to extract it.
                     myStringArray[i] = (result.items[i].snippet.topLevelComment.snippet.textOriginal);
                 }
-                
-                //We are still in the GET method success callback/now we will send a POST to the mvc controller with the pure text comments
+
+
+                //We are still in the "success" callback.After a succesfull GET request and after parsing the comments we are sending
+                //a POST request to our controller
+                /**
+                *@param {Object} myStringArray - It is an Array which containts Strings.These are the actuall youtube comments.
+                */
                 $.ajax
                     ({
                     type: "POST",
@@ -25,13 +36,21 @@
                     datatype: "json",
                     data: JSON.stringify(myStringArray),
                     traditional: true,
-                    //in case of a succesfull post the data is sent to the controller which returns a json.This json contains the result we need in order 
-                    //to render the highchart
+                    /**
+                    *@param {Object} result - It contains a Key-Value structure which is returned from the controller.
+                    We are using this result in order to build the setnimentAnalysis chart.
+                    */
                     success: function (result)
                     {
-                        sentimentAnalysisData(result); //calling the function which will construct the pie chart
-                        $.ajax({
-                            //dataType: "json",
+
+                        //A function which constructs the highchart.
+                        sentimentAnalysisData(result);
+
+                        /*A GET request to retrieve a structure which contains Comment-Value pairs.The value will determinate
+                        /if the comment is positive or not.The comment will be added in an unordered list with the representative
+                        class attached to it
+                        */
+                        $.ajax({                     
                             type: 'GET',
                             url: "NaiveSentiment/commentValues",
                             contentType: "application/json; charset=utf-8",
@@ -39,24 +58,28 @@
                             success: function (result) {
                                 $('#naiveComments').append("<ul id='newList'></ul>").addClass("list-group");;
                                 var keys = Object.keys(result);
-                                for (var i = 0; i < keys.length; i++) {
+                                for (var i = 0; i < keys.length; i++)
+                                {
                                     var key = keys[i];
                                     console.log(result[key]);
-                                    if (result[key] == 1) {
-                                        console.log("hereeeeee");
+                                    if (result[key] == 1)
+                                    {
+                                    
                                         $("<li>" + key + "</li>").appendTo("#newList").addClass("list-group-item list-group-item-success");
                                     }
-                                    else if (result[key] == -1) {
+                                    else if (result[key] == -1)
+                                    {
                                         $("<li>" + key + "</li>").appendTo("#newList").addClass("list-group-item list-group-item-danger");
                                     }
-                                    else {
+                                    else
+                                    {
                                         $("<li>" + key + "</li>").appendTo("#newList").addClass("list-group-item");
                                     }
                                 
                                    
                                 }
                                 $.ajax({
-                                    //dataType: "json",
+                                  
                                     type: 'GET',
                                     url: "VaderSharp/vaderCommentValues",
                                     contentType: "application/json; charset=utf-8",
@@ -64,23 +87,24 @@
                                     success: function (result) {
                                         $('#vaderComments').append("<ul id='newList'></ul>").addClass("list-group");
                                         var keys = Object.keys(result);
-                                        for (var i = 0; i < keys.length; i++) {
+                                        for (var i = 0; i < keys.length; i++)
+                                        {
                                             var key = keys[i];
                                             console.log(result[key]);
-                                            if (result[key] == 1) {
-                                                console.log("hereeeeee");
+                                            if (result[key] == 1)
+                                            {
+                
                                                 $("<li>" + key + "</li>").appendTo("#newList").addClass("list-group-item list-group-item-success");
                                             }
-                                            else if (result[key] == -1) {
+                                            else if (result[key] == -1)
+                                            {
                                                 $("<li>" + key + "</li>").appendTo("#newList").addClass("list-group-item list-group-item-danger");
                                             }
                                             else {
                                                 $("<li>" + key + "</li>").appendTo("#newList").addClass("list-group-item");
                                             }
 
-
                                         }
-
 
                                     },
                                     error: function (xmlhttprequest, textstatus, errorthrown) {
@@ -103,7 +127,7 @@
                         console.log("error: " + errorthrown);
                         console.log(myStringArray);
                     }
-                });//end of the post request
+                });
                 $.ajax
                     ({
                         type: "POST",
@@ -122,13 +146,12 @@
                             console.log("error: " + errorthrown);
                             console.log(myStringArray);
                         }
-                    });//end of the post request
+                    });
+            }
 
-            }//end of the GET success callback
+        });
 
-        });//end of the ajax function
-
-    });//end of the onClick method
+    });
 });
 
 
@@ -177,10 +200,8 @@ function sentimentAnalysisData(data) {
 };
 
 
+
 //Youtube Api call to get the video Like/Dislike ammount
-
-
-
 $(document).ready(function () {
     $("#proba").click(function (e)
     {
@@ -195,9 +216,9 @@ $(document).ready(function () {
                 var likeCounter = result.items[0].statistics.likeCount;
                 likeDislikeChart(likeCounter, dislikeCounter);
             },
-            error: function (xmlhttprequest, textstatus, errorthrown) {
+            error: function (xmlhttprequest, textstatus, errorthrown)
+            {
                 console.log("error: " + errorthrown);
-                
             }
         });
     });
@@ -251,6 +272,8 @@ function likeDislikeChart(likes,dislikes) {
     });
 }
 
+
+
 function sentimentNaiveData(data) {
     var chart = new Highcharts.Chart({
         chart:
@@ -273,16 +296,20 @@ function sentimentNaiveData(data) {
         {
             pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
         },
-        plotOptions: {
-            pie: {
+        plotOptions:
+        {
+          pie:
+            {
                 allowPointSelect: true,
                 cursor: 'pointer',
-                dataLabels: {
+                dataLabels:
+                    {
                     enabled: true,
                     format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-                    style: {
+                    style:
+                        {
                         color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-                    }
+                        }   
                 }
             }
         },
