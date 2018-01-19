@@ -9,6 +9,10 @@ namespace SentimentAnalyser.Helper
 {
     public class CommentAnalysisAction
     {
+
+        static Dictionary<string, int> vaderCommentAndValue = new Dictionary<string, int>();
+
+
         public  CommentAnalysisAction()
         {
 
@@ -32,14 +36,17 @@ namespace SentimentAnalyser.Helper
                 if (results.Compound > 0)
                 {
                     positiveScore += 1;
+                    vaderCommentAndValue.Add(comment, 1);
                 }
                 else if (results.Compound == 0)
                 {
                     neutralScore += 1;
+                    vaderCommentAndValue.Add(comment, 0);
                 }
                 else
                 {
                     negativeScore += 1;
+                    vaderCommentAndValue.Add(comment, -1);
                 }
                 
             }
@@ -55,6 +62,11 @@ namespace SentimentAnalyser.Helper
             return data;
         }
 
+
+        public Dictionary<string, int> getVaderCommentAndValues()
+        {
+            return vaderCommentAndValue;
+        }
 
 
     }

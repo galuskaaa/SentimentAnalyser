@@ -31,6 +31,16 @@ namespace SentimentAnalyser.Controllers
 
 
         }
+
+        [System.Web.Mvc.HttpGet]
+        public JsonResult vaderCommentValues()
+        {
+
+
+            CommentAnalysisAction commentAnalysisAction = new CommentAnalysisAction();
+            return Json(commentAnalysisAction.getVaderCommentAndValues(), JsonRequestBehavior.AllowGet);
+
+        }
     }
 }
 

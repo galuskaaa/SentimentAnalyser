@@ -58,6 +58,40 @@
                                 
                                    
                                 }
+                                $.ajax({
+                                    //dataType: "json",
+                                    type: 'GET',
+                                    url: "YoutubeApi/vaderCommentValues",
+                                    contentType: "application/json; charset=utf-8",
+                                    datatype: "json",
+                                    success: function (result) {
+                                        $('#vaderComments').append("<ul id='newList'></ul>");
+                                        var keys = Object.keys(result);
+                                        for (var i = 0; i < keys.length; i++) {
+                                            var key = keys[i];
+                                            console.log(result[key]);
+                                            if (result[key] == 1) {
+                                                console.log("hereeeeee");
+                                                $("<li>" + key + "</li>").appendTo("#newList").addClass("positive");
+                                            }
+                                            else if (result[key] == -1) {
+                                                $("<li>" + key + "</li>").appendTo("#newList").addClass("negative");
+                                            }
+                                            else {
+                                                $("<li>" + key + "</li>").appendTo("#newList").addClass("neutral");
+                                            }
+
+
+                                        }
+
+
+                                    },
+                                    error: function (xmlhttprequest, textstatus, errorthrown) {
+                                        alert("error: " + errorthrown);
+
+                                    }
+                                })
+
                            
                             },
                             error: function (xmlhttprequest, textstatus, errorthrown) {
