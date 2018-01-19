@@ -56,7 +56,8 @@
                             contentType: "application/json; charset=utf-8",
                             datatype: "json",
                             success: function (result) {
-                                $('#naiveComments').append("<ul id='newList'></ul>").addClass("list-group");;
+                                //$('#naiveComments').append("<h2>Naive Analysis</h2>").css("color","white");
+                                $('#naiveComments').append("<ul id='newList'></ul>").addClass("list-group");
                                 var keys = Object.keys(result);
                                 for (var i = 0; i < keys.length; i++)
                                 {
@@ -71,9 +72,9 @@
                                     {
                                         $("<li>" + key + "</li>").appendTo("#newList").addClass("list-group-item list-group-item-danger");
                                     }
-                                    else
+                                    else 
                                     {
-                                        $("<li>" + key + "</li>").appendTo("#newList").addClass("list-group-item");
+                                        $("<li>" + key + "</li>").appendTo("#newList").addClass("list-group-item").css("background-color","lightgray");
                                     }
                                 
                                    
@@ -85,6 +86,7 @@
                                     contentType: "application/json; charset=utf-8",
                                     datatype: "json",
                                     success: function (result) {
+                                     //   $('#vaderComments').append("<h2>VaderSharp Analysis</h2>").css("color","white");
                                         $('#vaderComments').append("<ul id='newList'></ul>").addClass("list-group");
                                         var keys = Object.keys(result);
                                         for (var i = 0; i < keys.length; i++)
@@ -101,7 +103,7 @@
                                                 $("<li>" + key + "</li>").appendTo("#newList").addClass("list-group-item list-group-item-danger");
                                             }
                                             else {
-                                                $("<li>" + key + "</li>").appendTo("#newList").addClass("list-group-item");
+                                                $("<li>" + key + "</li>").appendTo("#newList").addClass("list-group-item").css("background-color","lightgray");
                                             }
 
                                         }
@@ -166,6 +168,10 @@ function sentimentAnalysisData(data) {
             type: 'pie',
             renderTo: 'highchart1'
         },
+          exporting: {
+      enabled: true,
+      type: 'application/pdf'
+    },
         credits:
         {
             enabled: false
@@ -238,6 +244,10 @@ function likeDislikeChart(likes,dislikes) {
             type: 'pie',
             renderTo: 'highchart'
         },
+        exporting: {
+            enabled: true,
+            type: 'application/pdf'
+        },
         title: {
             text: 'Like/Dislike ratio'
         },
@@ -287,6 +297,10 @@ function sentimentNaiveData(data) {
         credits:
         {
             enabled: false
+        },
+        exporting: {
+            enabled: true,
+            type: 'application/pdf'
         },
         title:
         {
