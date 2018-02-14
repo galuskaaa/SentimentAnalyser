@@ -1,4 +1,9 @@
-﻿$(document).ready(function () {
+﻿/// <reference path="FileSaver.js" />
+var myStringArray = [];
+
+
+
+$(document).ready(function () {
     $("#proba").click(function (e) {
         var requestedVideoUrl = document.getElementById("videoUrl").value;
         /**
@@ -14,7 +19,7 @@
             success: function (result)
             {
                 var arrayLength = result.items.length;
-                var myStringArray = [];
+                
                 for (var i = 0; i < arrayLength; i++)
                 {
                     //* @param {Object} result - Contains the returned Json from the GET call mentioned above.In order to retrieve
@@ -56,7 +61,6 @@
                             contentType: "application/json; charset=utf-8",
                             datatype: "json",
                             success: function (result) {
-                                //$('#naiveComments').append("<h2>Naive Analysis</h2>").css("color","white");
                                 $('#naiveComments').append("<ul id='newList'></ul>").addClass("list-group");
                                 var keys = Object.keys(result);
                                 for (var i = 0; i < keys.length; i++)
@@ -336,4 +340,21 @@ function sentimentNaiveData(data) {
             }]
 
     })
+
+
 };
+
+
+function toText()
+{
+   
+    filename = document.getElementById("videoUrl").value;
+    var formatedText = [];
+    for (var i = 0, len = myStringArray.length; i < len; i++) {
+        formatedText[i] = i+1 + ":" + myStringArray[i] + "\r\n";
+    }
+ 
+    var blob = new Blob(formatedText, { type: "text/plain;charset=utf-8" });
+    saveAs(blob, filename + ".txt");
+    
+}
