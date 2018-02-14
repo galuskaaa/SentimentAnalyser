@@ -244,9 +244,13 @@ function likeDislikeChart(likes,dislikes) {
             type: 'pie',
             renderTo: 'highchart'
         },
+        credits:
+        {
+            enabled: false
+        },
         exporting: {
-            enabled: true,
-            type: 'application/pdf'
+            enabled: true
+           
         },
         title: {
             text: 'Like/Dislike ratio'
@@ -299,8 +303,7 @@ function sentimentNaiveData(data) {
             enabled: false
         },
         exporting: {
-            enabled: true,
-            type: 'application/pdf'
+            enabled: true
         },
         title:
         {
