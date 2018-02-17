@@ -7,13 +7,18 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-sm-12">
+        <div class="col-sm-4"></div>
+        <div  id="searchArea"class="col-sm-4">
             <span style="color:white">Video URL: </span>
             <input type="text" placeholder="For example:lyZQPjUT5B4" id="videoUrl">
-            <button id="proba" class="fa fa-search"></button>
-            <button id="toText" onclick="toText()">To Text!</button>
+            <button id="proba" class="fa fa-search"></button>  
+            <button id="downloadTextFile" onclick="saveTextFile()" style="visibility:hidden"> Download </button> 
         </div>
+        <div class="col-sm-4"></div>
     </div>
+
+
+
 </div>
 
 <div id="chartSection">

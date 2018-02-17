@@ -17,149 +17,122 @@ $(document).ready(function () {
             type: 'GET',
             url: "https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&maxResults=50&videoId="+ requestedVideoUrl +"&fields=items%2Fsnippet%2FtopLevelComment%2Fsnippet%2FtextOriginal&key=AIzaSyBb1hVnsuI_8HLkANAt7CCPUmBiygPzAnE",
             success: function (result)
-            {
-                var arrayLength = result.items.length;
-                
+            {                
+                var arrayLength = result.items.length;  
                 for (var i = 0; i < arrayLength; i++)
                 {
-                    //* @param {Object} result - Contains the returned Json from the GET call mentioned above.In order to retrieve
-                    // the pure text we have to extract it.
                     myStringArray[i] = (result.items[i].snippet.topLevelComment.snippet.textOriginal);
                 }
-
-
-                //We are still in the "success" callback.After a succesfull GET request and after parsing the comments we are sending
-                //a POST request to our controller
-                /**
-                *@param {Object} myStringArray - It is an Array which containts Strings.These are the actuall youtube comments.
-                */
-                $.ajax
-                    ({
-                    type: "POST",
-                    contentType: "application/json; charset=utf-8",
-                    url: "VaderSharp/getComments",
-                    datatype: "json",
-                    data: JSON.stringify(myStringArray),
-                    traditional: true,
-                    /**
-                    *@param {Object} result - It contains a Key-Value structure which is returned from the controller.
-                    We are using this result in order to build the setnimentAnalysis chart.
-                    */
-                    success: function (result)
-                    {
-
-                        //A function which constructs the highchart.
-                        sentimentAnalysisData(result);
-
-                        /*A GET request to retrieve a structure which contains Comment-Value pairs.The value will determinate
-                        /if the comment is positive or not.The comment will be added in an unordered list with the representative
-                        class attached to it
-                        */
-                        $.ajax({                     
-                            type: 'GET',
-                            url: "NaiveSentiment/commentValues",
-                            contentType: "application/json; charset=utf-8",
-                            datatype: "json",
-                            success: function (result) {
-                                $('#naiveComments').append("<ul id='newList'></ul>").addClass("list-group");
-                                var keys = Object.keys(result);
-                                for (var i = 0; i < keys.length; i++)
-                                {
-                                    var key = keys[i];
-                                    console.log(result[key]);
-                                    if (result[key] == 1)
-                                    {
-                                    
-                                        $("<li>" + key + "</li>").appendTo("#newList").addClass("list-group-item list-group-item-success");
-                                    }
-                                    else if (result[key] == -1)
-                                    {
-                                        $("<li>" + key + "</li>").appendTo("#newList").addClass("list-group-item list-group-item-danger");
-                                    }
-                                    else 
-                                    {
-                                        $("<li>" + key + "</li>").appendTo("#newList").addClass("list-group-item").css("background-color","lightgray");
-                                    }
-                                
-                                   
-                                }
-                                $.ajax({
-                                  
-                                    type: 'GET',
-                                    url: "VaderSharp/vaderCommentValues",
-                                    contentType: "application/json; charset=utf-8",
-                                    datatype: "json",
-                                    success: function (result) {
-                                     //   $('#vaderComments').append("<h2>VaderSharp Analysis</h2>").css("color","white");
-                                        $('#vaderComments').append("<ul id='newList'></ul>").addClass("list-group");
-                                        var keys = Object.keys(result);
-                                        for (var i = 0; i < keys.length; i++)
-                                        {
-                                            var key = keys[i];
-                                            console.log(result[key]);
-                                            if (result[key] == 1)
-                                            {
-                
-                                                $("<li>" + key + "</li>").appendTo("#newList").addClass("list-group-item list-group-item-success");
-                                            }
-                                            else if (result[key] == -1)
-                                            {
-                                                $("<li>" + key + "</li>").appendTo("#newList").addClass("list-group-item list-group-item-danger");
-                                            }
-                                            else {
-                                                $("<li>" + key + "</li>").appendTo("#newList").addClass("list-group-item").css("background-color","lightgray");
-                                            }
-
-                                        }
-
-                                    },
-                                    error: function (xmlhttprequest, textstatus, errorthrown) {
-                                        alert("error: " + errorthrown);
-
-                                    }
-                                })
-
-                           
-                            },
-                            error: function (xmlhttprequest, textstatus, errorthrown) {
-                                alert("error: " + errorthrown);
-                                
-                            }
-                        })
-                       
-                    },
-                    error: function (xmlhttprequest, textstatus, errorthrown)
-                    {
-                        console.log("error: " + errorthrown);
-                        console.log(myStringArray);
-                    }
+                $.ajax({
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        url: "VaderSharp/getComments",
+                        datatype: "json",
+                        data: JSON.stringify(myStringArray),
+                        traditional: true,
+                        success: function (result)
+                        {
+                            sentimentAnalysisData(result);
+                            displayVaderComments();
+                        },
+                        error: function (xmlhttprequest, textstatus, errorthrown)
+                        {
+                            alert("error: " + errorthrown);
+                        }
                 });
-                $.ajax
-                    ({
+                $.ajax({
                         type: "POST",
                         contentType: "application/json; charset=utf-8",
                         url: "NaiveSentiment/naiveResult",
                         datatype: "json",
                         data: JSON.stringify(myStringArray),
-                        traditional: true,
-                        //in case of a succesfull post the data is sent to the controller which returns a json.This json contains the result we need in order 
-                        //to render the highchart
-                        success: function (result) {
-                            sentimentNaiveData(result); //calling the function which will construct the pie chart
-
+                        traditional: true,                    
+                        success: function (result)
+                        {
+                            sentimentNaiveData(result);
+                            displayNaiveComments();
                         },
-                        error: function (xmlhttprequest, textstatus, errorthrown) {
+                        error: function (xmlhttprequest, textstatus, errorthrown)
+                        {
                             console.log("error: " + errorthrown);
                             console.log(myStringArray);
                         }
-                    });
+                });
+                document.getElementById("downloadTextFile").style.visibility = "visible";
+            },
+            error: function (xmlhttprequest, textstatus, errorthrown)
+            {
+                console.log("error: " + errorthrown);
+                console.log(myStringArray);
             }
-
         });
 
     });
 });
 
+
+function displayVaderComments() {
+    $.ajax({
+        type: 'GET',
+        url: "VaderSharp/vaderCommentValues",
+        contentType: "application/json; charset=utf-8",
+        datatype: "json",
+        success: function (result) {
+            $('#newList').remove();
+            $('#vaderComments').append("<ul id='newList'></ul>").addClass("list-group");
+            var keys = Object.keys(result);
+            for (var i = 0; i < keys.length; i++) {
+                var key = keys[i];
+                if (result[key] == 1) {
+
+                    $("<li>" + key + "</li>").appendTo("#newList").addClass("list-group-item list-group-item-success");
+                }
+                else if (result[key] == -1) {
+                    $("<li>" + key + "</li>").appendTo("#newList").addClass("list-group-item list-group-item-danger");
+                }
+                else {
+                    $("<li>" + key + "</li>").appendTo("#newList").addClass("list-group-item").css("background-color", "lightgray");
+                }
+
+            }
+
+        },
+        error: function (xmlhttprequest, textstatus, errorthrown) {
+            alert("error: " + errorthrown);
+
+        }
+    });
+}
+
+function displayNaiveComments() {
+    $.ajax({
+        type: 'GET',
+        url: "NaiveSentiment/commentValues",
+        contentType: "application/json; charset=utf-8",
+        datatype: "json",
+        success: function (result) {
+            $('#newNaiveList').remove();
+            $('#naiveComments').append("<ul id='newNaiveList'></ul>").addClass("list-group");
+            var keys = Object.keys(result);
+            for (var i = 0; i < keys.length; i++) {
+                var key = keys[i];
+                if (result[key] == 1) {
+
+                    $("<li>" + key + "</li>").appendTo("#newNaiveList").addClass("list-group-item list-group-item-success");
+                }
+                else if (result[key] == -1) {
+                    $("<li>" + key + "</li>").appendTo("#newNaiveList").addClass("list-group-item list-group-item-danger");
+                }
+                else {
+                    $("<li>" + key + "</li>").appendTo("#newNaiveList").addClass("list-group-item").css("background-color", "lightgray");
+                }
+            }
+        },
+        error: function (xmlhttprequest, textstatus, errorthrown) {
+            alert("error: " + errorthrown);
+        }
+    });
+}
 
 //Construction of a pie chart with data returned from the controller
 function sentimentAnalysisData(data) {
@@ -344,17 +317,15 @@ function sentimentNaiveData(data) {
 
 };
 
-
-function toText()
-{
-   
-    filename = document.getElementById("videoUrl").value;
-    var formatedText = [];
-    for (var i = 0, len = myStringArray.length; i < len; i++) {
-        formatedText[i] = i+1 + ":" + myStringArray[i] + "\r\n";
-    }
- 
-    var blob = new Blob(formatedText, { type: "text/plain;charset=utf-8" });
-    saveAs(blob, filename + ".txt");
-    
+function saveTextFile()
+{   
+        filename = document.getElementById("videoUrl").value;
+        var formatedText = [];
+        for (var i = 0, len = myStringArray.length; i < len; i++)
+        {
+                formatedText[i] = i + 1 + ":" + myStringArray[i] + "\r\n";
+        }
+        var blob = new Blob(formatedText, { type: "text/plain;charset=utf-8" });
+        saveAs(blob, filename + ".txt");
 }
+
