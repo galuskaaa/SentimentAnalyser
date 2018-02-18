@@ -2,7 +2,12 @@
     ViewBag.Title = "Home Page";
 }
 <script src="~/Scripts/apiCallsAndHighcharts.js"></script>
+<script>
 
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
 
 
 <div class="container">
@@ -12,7 +17,7 @@
             <span style="color:white">Video URL: </span>
             <input type="text" placeholder="For example:lyZQPjUT5B4" id="videoUrl">
             <button id="proba" class="fa fa-search"></button>  
-            <button id="downloadTextFile" onclick="saveTextFile()" style="visibility:hidden"> Download </button> 
+            <button id="downloadTextFile"   data-toggle="tooltip" data-placement="right" title="Download a text file which contains the comments" onclick="saveTextFile()" style="visibility:hidden"  class="btn btn-lg btn-primary"><span class="glyphicon glyphicon-cloud-download"></span> Download Text File</button> 
         </div>
         <div class="col-sm-4"></div>
     </div>
