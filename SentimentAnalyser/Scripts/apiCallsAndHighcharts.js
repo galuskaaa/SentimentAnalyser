@@ -6,6 +6,7 @@ var myStringArray = [];
 $(document).ready(function () {
     $("#proba").click(function (e) {
         var requestedVideoUrl = document.getElementById("videoUrl").value;
+        insertYoutubePlayer();
         /**
          * @param {String} url - an URL which targets the youtube API and includes the information that must be retrieved.In this case a list of comments
          * @param {String} requestedVideoUrl - a String which is used as an uniq key of a youtube video.The value is retrieved from the user interface
@@ -34,6 +35,7 @@ $(document).ready(function () {
                         {
                             sentimentAnalysisData(result);
                             displayVaderComments();
+                            
                         },
                         error: function (xmlhttprequest, textstatus, errorthrown)
                         {
@@ -329,3 +331,21 @@ function saveTextFile()
         saveAs(blob, filename + ".txt");
 }
 
+function insertYoutubePlayer()
+{
+    var divReference = document.getElementById("youtubeVideoBox");
+    var parentReference = document.getElementById("youtubeContainer");
+    var ifrm = document.createElement('iframe');
+    ifrm.width = "853";
+    ifrm.height = "480";
+    divReference.innerHTML = "";
+    ifrm.setAttribute('src',"https://www.youtube.com/embed/" + requestedVideoUrl());
+    divReference.appendChild(ifrm);
+    parentReference.style.display = "block";
+}
+
+function requestedVideoUrl()
+{
+    var reqdVideoUrl = document.getElementById("videoUrl").value;
+    return reqdVideoUrl;
+}
