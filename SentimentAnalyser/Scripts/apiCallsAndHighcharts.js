@@ -1,77 +1,96 @@
 ﻿/// <reference path="FileSaver.js" />
 var myStringArray = [];
-
-
+var nextPT = '';
 
 $(document).ready(function () {
     $("#proba").click(function (e) {
         var requestedVideoUrl = document.getElementById("videoUrl").value;
         insertYoutubePlayer();
-        /**
-         * @param {String} url - an URL which targets the youtube API and includes the information that must be retrieved.In this case a list of comments
-         * @param {String} requestedVideoUrl - a String which is used as an uniq key of a youtube video.The value is retrieved from the user interface
-         * @param {Number} arrayLength - In case of a succesfull request the arrayLength variable will hold the number of comments returned
-         * @param {Object} myStringArray - An object which will hold the pure text of the returned comments
-         */
-        $.ajax({
-            dataType: "json",
-            type: 'GET',
-            url: "https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&maxResults=50&videoId="+ requestedVideoUrl +"&fields=items%2Fsnippet%2FtopLevelComment%2Fsnippet%2FtextOriginal&key=AIzaSyBb1hVnsuI_8HLkANAt7CCPUmBiygPzAnE",
-            success: function (result)
-            {                
-                var arrayLength = result.items.length;  
-                for (var i = 0; i < arrayLength; i++)
-                {
-                    myStringArray[i] = (result.items[i].snippet.topLevelComment.snippet.textOriginal);
-                }
-                $.ajax({
-                        type: "POST",
-                        contentType: "application/json; charset=utf-8",
-                        url: "VaderSharp/getComments",
-                        datatype: "json",
-                        data: JSON.stringify(myStringArray),
-                        traditional: true,
-                        success: function (result)
-                        {
-                            sentimentAnalysisData(result);
-                            displayVaderComments();
-                            
-                        },
-                        error: function (xmlhttprequest, textstatus, errorthrown)
-                        {
-                            alert("error: " + errorthrown);
-                        }
-                });
-                $.ajax({
-                        type: "POST",
-                        contentType: "application/json; charset=utf-8",
-                        url: "NaiveSentiment/naiveResult",
-                        datatype: "json",
-                        data: JSON.stringify(myStringArray),
-                        traditional: true,                    
-                        success: function (result)
-                        {
-                            sentimentNaiveData(result);
-                            displayNaiveComments();
-                        },
-                        error: function (xmlhttprequest, textstatus, errorthrown)
-                        {
-                            console.log("error: " + errorthrown);
-                            console.log(myStringArray);
-                        }
-                });
-                document.getElementById("downloadTextFile").style.visibility = "visible";
-            },
-            error: function (xmlhttprequest, textstatus, errorthrown)
-            {
-                console.log("error: " + errorthrown);
-                console.log(myStringArray);
-            }
-        });
-
+        myStringArray = [];
+        retrieveComments(requestedVideoUrl, nextPT); 
     });
 });
 
+
+function analyiseAndChart()
+{
+    vaderAnalysis(myStringArray);
+    naiveAnalysis(myStringArray);
+    document.getElementById("downloadTextFile").style.visibility = "visible";
+}
+
+function retrieveComments(requestedVideoUrl,nextPT) {
+    $.ajax({
+        dataType: "json",
+        type: 'GET',
+        url: "https://www.googleapis.com/youtube/v3/commentThreads?pageToken=" + nextPT + "&part=snippet&maxResults=50&videoId=" + requestedVideoUrl + "&key=AIzaSyBb1hVnsuI_8HLkANAt7CCPUmBiygPzAnE",
+        success: function (result) {
+            var arrayLength = result.items.length;
+            for (var i = 0; i < arrayLength; i++)
+            {
+                comment = result.items[i].snippet.topLevelComment.snippet.textOriginal;
+                if (myStringArray.indexOf(comment) < 0)
+                {
+                    myStringArray.push(comment);
+                }
+                
+            }
+            if ('nextPageToken' in result) {
+
+                nextPT = result.nextPageToken;
+                retrieveComments(requestedVideoUrl, nextPT);
+            }
+            else
+            {
+                analyiseAndChart();
+            }
+            
+        },
+        error: function (xmlhttprequest, textstatus, errorthrown) {
+            console.log("error: " + errorthrown);
+        }
+
+
+    });
+};
+
+
+function naiveAnalysis(myStringArrayP) {
+    $.ajax({
+        type: "POST",
+        contentType: "application/json; charset=utf-8",
+        url: "NaiveSentiment/naiveResult",
+        datatype: "json",
+        data: JSON.stringify(myStringArrayP),
+        traditional: true,
+        success: function (result) {
+            sentimentNaiveData(result);
+            displayNaiveComments();
+        },
+        error: function (xmlhttprequest, textstatus, errorthrown) {
+            console.log("error: " + errorthrown);
+        }
+    });
+}
+
+function vaderAnalysis(myStringArrayP) {
+    $.ajax({
+        type: "POST",
+        contentType: "application/json; charset=utf-8",
+        url: "VaderSharp/getComments",
+        datatype: "json",
+        data: JSON.stringify(myStringArrayP),
+        traditional: true,
+        success: function (result) {
+            sentimentAnalysisData(result);
+            displayVaderComments();
+
+        },
+        error: function (xmlhttprequest, textstatus, errorthrown) {
+            alert("error: " + errorthrown);
+        }
+    });
+}
 
 function displayVaderComments() {
     $.ajax({
@@ -320,7 +339,8 @@ function sentimentNaiveData(data) {
 };
 
 function saveTextFile()
-{   
+{
+  
         filename = document.getElementById("videoUrl").value;
         var formatedText = [];
         for (var i = 0, len = myStringArray.length; i < len; i++)
