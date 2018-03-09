@@ -1,4 +1,4 @@
-abandon	-2
+﻿abandon	-2
 abandoned	-2
 abandons	-2
 abducted	-2
@@ -869,6 +869,7 @@ envies	-1
 envious	-2
 envy	-1
 envying	-1
+epic	2
 erroneous	-2
 error	-2
 errors	-2
@@ -1939,6 +1940,7 @@ romance	2
 rotfl	4
 rotflmfao	4
 rotflol	4
+rubbish	-2
 ruin	-2
 ruined	-2
 ruining	-2

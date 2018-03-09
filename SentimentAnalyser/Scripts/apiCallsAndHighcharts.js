@@ -1,10 +1,10 @@
 ﻿/// <reference path="FileSaver.js" />
 var myStringArray = [];
 var nextPT = '';
-
+var requestedVideoUrl='';
 $(document).ready(function () {
     $("#proba").click(function (e) {
-        var requestedVideoUrl = document.getElementById("videoUrl").value;
+        requestedVideoUrl = youtube_parser();
         insertYoutubePlayer();
         myStringArray = [];
         retrieveComments(requestedVideoUrl, nextPT); 
@@ -209,7 +209,6 @@ function sentimentAnalysisData(data) {
 $(document).ready(function () {
     $("#proba").click(function (e)
     {
-        var requestedVideoUrl = document.getElementById("videoUrl").value;
         $.ajax({
             dataType: "json",
             type: 'GET',
@@ -359,13 +358,16 @@ function insertYoutubePlayer()
     ifrm.width = "853";
     ifrm.height = "480";
     divReference.innerHTML = "";
-    ifrm.setAttribute('src',"https://www.youtube.com/embed/" + requestedVideoUrl());
+    ifrm.setAttribute('src',"https://www.youtube.com/embed/" + requestedVideoUrl);
     divReference.appendChild(ifrm);
     parentReference.style.display = "block";
 }
 
-function requestedVideoUrl()
-{
-    var reqdVideoUrl = document.getElementById("videoUrl").value;
-    return reqdVideoUrl;
+
+
+function youtube_parser() {
+    url = document.getElementById("videoUrl").value;
+    var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/;
+    var match = url.match(regExp);
+    return (match && match[7].length == 11) ? match[7] : false;
 }
