@@ -18,11 +18,11 @@ namespace SentimentAnalyser.Helper
         private readonly IDictionary<string, int> wordDictionary;
         private IDictionary<string, int> Words { get { return wordDictionary; } }
         private int WordsCount { get { return wordDictionary.Count; } }
-        private static  Dictionary<string, int> commentAndValue = new Dictionary<string, int>();
+        private static Dictionary<string, int> commentAndValue = new Dictionary<string, int>();
 
 
         public NaiveAnalysisAction()
-        {   
+        {
             var filePath = @"D:\Licens\SentimentAnalyser\SentimentAnalyser\AFINN-111.txt";
             wordDictionary = new Dictionary<string, int>();
             using (var file = new StreamReader(filePath))
@@ -83,7 +83,7 @@ namespace SentimentAnalyser.Helper
                 {
                     positiveScore += 1;
                     commentAndValue.Add(comment, 1);
-                    commentModel.Positive.Add(comment);  
+                    commentModel.Positive.Add(comment);
                 }
                 else if (results.Sentiment < 0)
                 {
@@ -101,20 +101,20 @@ namespace SentimentAnalyser.Helper
 
             }
 
-           var data = new[]
-           {
+            var data = new[]
+            {
                   new { name = "Positive", y = positiveScore },
                   new { name = "Negative", y = negativeScore },
                   new { name = "Neutral",  y = neutralScore}
-                  
+
             };
             return data;
         }
 
 
-        public Dictionary<string,int> getCommentAndValues()
+        public Dictionary<string, int> getCommentAndValues()
         {
-            return commentAndValue;  
+            return commentAndValue;
         }
 
     }

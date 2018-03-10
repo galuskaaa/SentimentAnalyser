@@ -11,7 +11,9 @@ namespace SentimentAnalyser.Controllers
     public class CommentProcessingController : Controller
     {
 
-        public  static List<string> englishComments = new List<string>();
+        private static List<string> englishComments = new List<string>();
+
+
         // GET: CommentProcessing
         public ActionResult Index()
         {
@@ -26,15 +28,13 @@ namespace SentimentAnalyser.Controllers
             LanguageDetector languageDetector = new LanguageDetector();
             foreach (var comment in values)
             {
-                
+
                 string lanCode = languageDetector.Detect(comment);
                 if (languageDetector.GetLanguageNameByCode(lanCode) == "English")
                 {
                     englishComments.Add(comment);
-                    //Debug.WriteLine(comment);
                 }
             }
-            //CommentAnalysisAction commentAnalysisAction = new CommentAnalysisAction();
             return Json(englishComments, JsonRequestBehavior.AllowGet);
         }
 

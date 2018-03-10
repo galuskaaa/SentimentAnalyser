@@ -298,7 +298,6 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\CommentProcessingController.cs" />
-    <Compile Include="Controllers\GoogleMethodController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\NaiveSentimentController.cs" />
@@ -306,7 +305,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Helper\CommentAnalysisAction.cs" />
+    <Compile Include="Helper\VaderAnalysisAction.cs" />
     <Compile Include="Helper\LanguageDetection.cs" />
     <Compile Include="Helper\LanguageDetector.cs" />
     <Compile Include="Helper\LanguageStatistics.cs" />

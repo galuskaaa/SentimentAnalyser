@@ -24,16 +24,16 @@ namespace SentimentAnalyser.Controllers
         [System.Web.Mvc.HttpPost]
         public JsonResult getComments(List<String> values)
         {
-            CommentAnalysisAction commentAnalysisAction = new CommentAnalysisAction();
-            return Json(commentAnalysisAction.evaluateCommentSentiment(values), JsonRequestBehavior.AllowGet);
+            VaderAnalysisAction vaderAnalysisAction = new VaderAnalysisAction();
+            return Json(vaderAnalysisAction.evaluateCommentSentiment(values), JsonRequestBehavior.AllowGet);
         }
 
 
         [System.Web.Mvc.HttpGet]
         public JsonResult vaderCommentValues()
         {
-            CommentAnalysisAction commentAnalysisAction = new CommentAnalysisAction();
-            return Json(commentAnalysisAction.getVaderCommentAndValues(), JsonRequestBehavior.AllowGet);
+            VaderAnalysisAction vaderAnalysisAction = new VaderAnalysisAction();
+            return Json(vaderAnalysisAction.getVaderCommentAndValues(), JsonRequestBehavior.AllowGet);
         }
 
     }

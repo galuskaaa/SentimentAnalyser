@@ -36,7 +36,7 @@ function retrieveComments(requestedVideoUrl,nextPT) {
             }
             else
             {
-                analyiseAndChart();
+                postComments(myStringArray)
             }
             
         },
@@ -47,12 +47,6 @@ function retrieveComments(requestedVideoUrl,nextPT) {
 
     });
 };
-
-function analyiseAndChart()
-{
-    postComments(myStringArray);
-    document.getElementById("downloadTextFile").style.visibility = "visible";
-}
 
 function postComments(myStringArrayP)
 {
@@ -65,11 +59,9 @@ function postComments(myStringArrayP)
         traditional: true,
         success: function (result)
         {
-            console.log(result.length);
+            document.getElementById("downloadTextFile").style.visibility = "visible";
             vaderAnalysis(result);
             naiveAnalysis(result);
-            
-
         },
         error: function (xmlhttprequest, textstatus, errorthrown) {
             alert("error: " + errorthrown);
@@ -113,8 +105,6 @@ function naiveAnalysis(myStringArrayP) {
         }
     });
 }
-
-
 
 function displayVaderComments() {
     $.ajax({
@@ -227,8 +217,6 @@ function sentimentAnalysisData(data) {
     })
 };
 
-
-
 //Youtube Api call to get the video Like/Dislike ammount
 $(document).ready(function () {
     $("#proba").click(function (e)
@@ -250,8 +238,6 @@ $(document).ready(function () {
         });
     });
 });
-
-
 
 //Construction of a pie chart that display the like/dislike ratio
 function likeDislikeChart(likes,dislikes) {
@@ -306,7 +292,6 @@ function likeDislikeChart(likes,dislikes) {
         }]
     });
 }
-
 
 
 function sentimentNaiveData(data) {
@@ -386,8 +371,6 @@ function insertYoutubePlayer()
     divReference.appendChild(ifrm);
     parentReference.style.display = "block";
 }
-
-
 
 function youtube_parser() {
     url = document.getElementById("videoUrl").value;

@@ -27,10 +27,8 @@ namespace SentimentAnalyser.Controllers
         [System.Web.Mvc.HttpGet]
         public JsonResult commentValues()
         {
-
             NaiveAnalysisAction naiveAnalysisAction = new NaiveAnalysisAction();
             return Json(naiveAnalysisAction.getCommentAndValues(), JsonRequestBehavior.AllowGet);
-
         }
 
     }

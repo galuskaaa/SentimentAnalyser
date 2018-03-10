@@ -7,13 +7,13 @@ using VaderSharp;
 
 namespace SentimentAnalyser.Helper
 {
-    public class CommentAnalysisAction
+    public class VaderAnalysisAction
     {
 
         private static Dictionary<string, int> vaderCommentAndValue = new Dictionary<string, int>();
 
 
-        public  CommentAnalysisAction()
+        public VaderAnalysisAction()
         {
 
         }
@@ -21,7 +21,7 @@ namespace SentimentAnalyser.Helper
 
         public Object[] evaluateCommentSentiment(List<String> values)
         {
-            
+
             double positiveScore = 0;
             double negativeScore = 0;
             double neutralScore = 0;
@@ -46,7 +46,7 @@ namespace SentimentAnalyser.Helper
                     negativeScore += 1;
                     vaderCommentAndValue.Add(comment, -1);
                 }
-                
+
             }
 
             var data = new[]
