@@ -1,5 +1,4 @@
-﻿using LiteMiner.classes;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using SentimentAnalyser.Models;
 using System;
 using System.Collections.Generic;
@@ -77,32 +76,27 @@ namespace SentimentAnalyser.Helper
             NaiveAnalysisAction naiveAnalysisAction = new NaiveAnalysisAction();
             CommentModel commentModel = new CommentModel();
             commentAndValue.Clear();
-            LanguageDetector languageDetector = new LanguageDetector();
             foreach (var comment in values)
             {
-                string lanCode = languageDetector.Detect(comment);
-                if (languageDetector.GetLanguageNameByCode(lanCode) == "English")
+                var results = naiveAnalysisAction.GetScore(comment);
+                if (results.Sentiment > 0)
                 {
-                    var results = naiveAnalysisAction.GetScore(comment);
-                    if (results.Sentiment > 0)
-                    {
-                        positiveScore += 1;
-                        commentAndValue.Add(comment, 1);
-                        commentModel.Positive.Add(comment);
-                    }
-                    else if (results.Sentiment < 0)
-                    {
-                        negativeScore += 1;
-                        commentAndValue.Add(comment, -1);
-                        commentModel.Negative.Add(comment);
+                    positiveScore += 1;
+                    commentAndValue.Add(comment, 1);
+                    commentModel.Positive.Add(comment);  
+                }
+                else if (results.Sentiment < 0)
+                {
+                    negativeScore += 1;
+                    commentAndValue.Add(comment, -1);
+                    commentModel.Negative.Add(comment);
 
-                    }
-                    else if (results.Sentiment == 0)
-                    {
-                        neutralScore += 1;
-                        commentAndValue.Add(comment, 0);
-                        commentModel.Neutral.Add(comment);
-                    }
+                }
+                else if (results.Sentiment == 0)
+                {
+                    neutralScore += 1;
+                    commentAndValue.Add(comment, 0);
+                    commentModel.Neutral.Add(comment);
                 }
 
             }

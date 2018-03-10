@@ -297,6 +297,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\CommentProcessingController.cs" />
     <Compile Include="Controllers\GoogleMethodController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
@@ -432,6 +433,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\CommentProcessing\" />
     <Folder Include="Views\GoogleMethod\" />
     <Folder Include="Views\NaiveSentiment\" />
     <Folder Include="Views\TextInput\" />

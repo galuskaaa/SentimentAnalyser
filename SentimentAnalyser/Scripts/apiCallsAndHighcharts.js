@@ -11,20 +11,14 @@ $(document).ready(function () {
     });
 });
 
-
-function analyiseAndChart()
-{
-    vaderAnalysis(myStringArray);
-    naiveAnalysis(myStringArray);
-    document.getElementById("downloadTextFile").style.visibility = "visible";
-}
-
 function retrieveComments(requestedVideoUrl,nextPT) {
     $.ajax({
         dataType: "json",
         type: 'GET',
         url: "https://www.googleapis.com/youtube/v3/commentThreads?pageToken=" + nextPT + "&part=snippet&maxResults=50&videoId=" + requestedVideoUrl + "&key=AIzaSyBb1hVnsuI_8HLkANAt7CCPUmBiygPzAnE",
         success: function (result) {
+            $('#newList').remove();
+            $('#newNaiveList').remove();
             var arrayLength = result.items.length;
             for (var i = 0; i < arrayLength; i++)
             {
@@ -54,21 +48,31 @@ function retrieveComments(requestedVideoUrl,nextPT) {
     });
 };
 
+function analyiseAndChart()
+{
+    postComments(myStringArray);
+    document.getElementById("downloadTextFile").style.visibility = "visible";
+}
 
-function naiveAnalysis(myStringArrayP) {
+function postComments(myStringArrayP)
+{
     $.ajax({
         type: "POST",
         contentType: "application/json; charset=utf-8",
-        url: "NaiveSentiment/naiveResult",
+        url: "CommentProcessing/getComments",
         datatype: "json",
         data: JSON.stringify(myStringArrayP),
         traditional: true,
-        success: function (result) {
-            sentimentNaiveData(result);
-            displayNaiveComments();
+        success: function (result)
+        {
+            console.log(result.length);
+            vaderAnalysis(result);
+            naiveAnalysis(result);
+            
+
         },
         error: function (xmlhttprequest, textstatus, errorthrown) {
-            console.log("error: " + errorthrown);
+            alert("error: " + errorthrown);
         }
     });
 }
@@ -91,6 +95,26 @@ function vaderAnalysis(myStringArrayP) {
         }
     });
 }
+
+function naiveAnalysis(myStringArrayP) {
+    $.ajax({
+        type: "POST",
+        contentType: "application/json; charset=utf-8",
+        url: "NaiveSentiment/naiveResult",
+        datatype: "json",
+        data: JSON.stringify(myStringArrayP),
+        traditional: true,
+        success: function (result) {
+            sentimentNaiveData(result);
+            displayNaiveComments();
+        },
+        error: function (xmlhttprequest, textstatus, errorthrown) {
+            console.log("error: " + errorthrown);
+        }
+    });
+}
+
+
 
 function displayVaderComments() {
     $.ajax({
@@ -166,10 +190,10 @@ function sentimentAnalysisData(data) {
             type: 'pie',
             renderTo: 'highchart1'
         },
-          exporting: {
-      enabled: true,
-      type: 'application/pdf'
-    },
+        exporting: {
+            enabled: true,
+            type: 'application/pdf'
+        },
         credits:
         {
             enabled: false
@@ -312,20 +336,20 @@ function sentimentNaiveData(data) {
         },
         plotOptions:
         {
-          pie:
-            {
-                allowPointSelect: true,
-                cursor: 'pointer',
-                dataLabels:
-                    {
-                    enabled: true,
-                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-                    style:
-                        {
-                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-                        }   
-                }
-            }
+            pie:
+              {
+                  allowPointSelect: true,
+                  cursor: 'pointer',
+                  dataLabels:
+                      {
+                          enabled: true,
+                          format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                          style:
+                              {
+                                  color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                              }   
+                      }
+              }
         },
         series:
             [{
@@ -340,14 +364,14 @@ function sentimentNaiveData(data) {
 function saveTextFile()
 {
   
-        filename = document.getElementById("videoUrl").value;
-        var formatedText = [];
-        for (var i = 0, len = myStringArray.length; i < len; i++)
-        {
-                formatedText[i] = i + 1 + ":" + myStringArray[i] + "\r\n";
-        }
-        var blob = new Blob(formatedText, { type: "text/plain;charset=utf-8" });
-        saveAs(blob, filename + ".txt");
+    filename = document.getElementById("videoUrl").value;
+    var formatedText = [];
+    for (var i = 0, len = myStringArray.length; i < len; i++)
+    {
+        formatedText[i] = i + 1 + ":" + myStringArray[i] + "\r\n";
+    }
+    var blob = new Blob(formatedText, { type: "text/plain;charset=utf-8" });
+    saveAs(blob, filename + ".txt");
 }
 
 function insertYoutubePlayer()
