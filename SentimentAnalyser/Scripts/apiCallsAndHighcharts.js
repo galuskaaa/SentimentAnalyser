@@ -17,6 +17,7 @@ function retrieveComments(requestedVideoUrl,nextPT) {
         type: 'GET',
         url: "https://www.googleapis.com/youtube/v3/commentThreads?pageToken=" + nextPT + "&part=snippet&maxResults=50&videoId=" + requestedVideoUrl + "&key=AIzaSyBb1hVnsuI_8HLkANAt7CCPUmBiygPzAnE",
         success: function (result) {
+            console.log(result);
             $('#newList').remove();
             $('#newNaiveList').remove();
             var arrayLength = result.items.length;
@@ -178,7 +179,7 @@ function sentimentAnalysisData(data) {
             plotBorderWidth: null,
             plotShadow: false,
             type: 'pie',
-            renderTo: 'highchart1'
+            renderTo: 'highchart1'   
         },
         exporting: {
             enabled: true,
@@ -200,6 +201,7 @@ function sentimentAnalysisData(data) {
             pie: {
                 allowPointSelect: true,
                 cursor: 'pointer',
+                colors: ['#a0db8e', '#e52845', '#c6cec8'],
                 dataLabels: {
                     enabled: true,
                     format: '<b>{point.name}</b>: {point.percentage:.1f} %',
@@ -324,6 +326,7 @@ function sentimentNaiveData(data) {
             pie:
               {
                   allowPointSelect: true,
+                  colors: ['#a0db8e', '#e52845', '#c6cec8'],
                   cursor: 'pointer',
                   dataLabels:
                       {
