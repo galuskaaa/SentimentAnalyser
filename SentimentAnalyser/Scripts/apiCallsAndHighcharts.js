@@ -1,45 +1,46 @@
 ﻿/// <reference path="FileSaver.js" />
 var myStringArray = [];
 var nextPT = '';
-var requestedVideoUrl='';
+var requestedVideoUrl = '';
 $(document).ready(function () {
+    $(".panel-collapse").collapse("hide");
     $("#proba").click(function (e) {
         requestedVideoUrl = youtube_parser();
-        insertYoutubePlayer();
         myStringArray = [];
-        retrieveComments(requestedVideoUrl, nextPT); 
+  
+        retrieveComments(requestedVideoUrl, nextPT);
     });
 });
 
-function retrieveComments(requestedVideoUrl,nextPT) {
+function retrieveComments(requestedVideoUrl, nextPT) {
     $.ajax({
         dataType: "json",
         type: 'GET',
         url: "https://www.googleapis.com/youtube/v3/commentThreads?pageToken=" + nextPT + "&part=snippet&maxResults=50&videoId=" + requestedVideoUrl + "&key=AIzaSyBb1hVnsuI_8HLkANAt7CCPUmBiygPzAnE",
         success: function (result) {
             console.log(result);
+
             $('#newList').remove();
             $('#newNaiveList').remove();
+            $('#myPleaseWait').modal('show');
+            document.getElementById('videoUrl').value = "";
             var arrayLength = result.items.length;
-            for (var i = 0; i < arrayLength; i++)
-            {
+            for (var i = 0; i < arrayLength; i++) {
                 comment = result.items[i].snippet.topLevelComment.snippet.textOriginal;
-                if (myStringArray.indexOf(comment) < 0)
-                {
+                if (myStringArray.indexOf(comment) < 0) {
                     myStringArray.push(comment);
                 }
-                
+
             }
             if ('nextPageToken' in result) {
 
                 nextPT = result.nextPageToken;
                 retrieveComments(requestedVideoUrl, nextPT);
             }
-            else
-            {
+            else {
                 postComments(myStringArray)
             }
-            
+
         },
         error: function (xmlhttprequest, textstatus, errorthrown) {
             console.log("error: " + errorthrown);
@@ -49,8 +50,7 @@ function retrieveComments(requestedVideoUrl,nextPT) {
     });
 };
 
-function postComments(myStringArrayP)
-{
+function postComments(myStringArrayP) {
     $.ajax({
         type: "POST",
         contentType: "application/json; charset=utf-8",
@@ -58,9 +58,11 @@ function postComments(myStringArrayP)
         datatype: "json",
         data: JSON.stringify(myStringArrayP),
         traditional: true,
-        success: function (result)
-        {
+        success: function (result) {
+            $('#myPleaseWait').modal('hide');
             document.getElementById("downloadTextFile").style.visibility = "visible";
+            likeDislikeChart(likeCounter, dislikeCounter);
+            insertYoutubePlayer();
             vaderAnalysis(result);
             naiveAnalysis(result);
         },
@@ -100,6 +102,7 @@ function naiveAnalysis(myStringArrayP) {
         success: function (result) {
             sentimentNaiveData(result);
             displayNaiveComments();
+
         },
         error: function (xmlhttprequest, textstatus, errorthrown) {
             console.log("error: " + errorthrown);
@@ -179,7 +182,7 @@ function sentimentAnalysisData(data) {
             plotBorderWidth: null,
             plotShadow: false,
             type: 'pie',
-            renderTo: 'highchart1'   
+            renderTo: 'highchart1'
         },
         exporting: {
             enabled: true,
@@ -221,20 +224,16 @@ function sentimentAnalysisData(data) {
 
 //Youtube Api call to get the video Like/Dislike ammount
 $(document).ready(function () {
-    $("#proba").click(function (e)
-    {
+    $("#proba").click(function (e) {
         $.ajax({
             dataType: "json",
             type: 'GET',
-            url: "https://www.googleapis.com/youtube/v3/videos?part=statistics&id="+ requestedVideoUrl + "&fields=items(statistics(dislikeCount%2ClikeCount))&key=AIzaSyBb1hVnsuI_8HLkANAt7CCPUmBiygPzAnE",
-            success: function (result)
-            {
-                var dislikeCounter = result.items[0].statistics.dislikeCount;
-                var likeCounter = result.items[0].statistics.likeCount;
-                likeDislikeChart(likeCounter, dislikeCounter);
+            url: "https://www.googleapis.com/youtube/v3/videos?part=statistics&id=" + requestedVideoUrl + "&fields=items(statistics(dislikeCount%2ClikeCount))&key=AIzaSyBb1hVnsuI_8HLkANAt7CCPUmBiygPzAnE",
+            success: function (result) {
+                dislikeCounter = result.items[0].statistics.dislikeCount;
+                likeCounter = result.items[0].statistics.likeCount;
             },
-            error: function (xmlhttprequest, textstatus, errorthrown)
-            {
+            error: function (xmlhttprequest, textstatus, errorthrown) {
                 console.log("error: " + errorthrown);
             }
         });
@@ -242,11 +241,11 @@ $(document).ready(function () {
 });
 
 //Construction of a pie chart that display the like/dislike ratio
-function likeDislikeChart(likes,dislikes) {
+function likeDislikeChart(likes, dislikes) {
     var chart = new Highcharts.Chart({
         chart:
         {
-            
+
             plotBackgroundColor: null,
             plotBorderWidth: null,
             plotShadow: false,
@@ -259,7 +258,7 @@ function likeDislikeChart(likes,dislikes) {
         },
         exporting: {
             enabled: true
-           
+
         },
         title: {
             text: 'Like/Dislike ratio'
@@ -289,7 +288,7 @@ function likeDislikeChart(likes,dislikes) {
             {
                 name: 'Dislikes',
                 y: Number(dislikes)
-                
+
             }]
         }]
     });
@@ -335,7 +334,7 @@ function sentimentNaiveData(data) {
                           style:
                               {
                                   color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-                              }   
+                              }
                       }
               }
         },
@@ -349,28 +348,25 @@ function sentimentNaiveData(data) {
 
 };
 
-function saveTextFile()
-{
-  
+function saveTextFile() {
+
     filename = document.getElementById("videoUrl").value;
     var formatedText = [];
-    for (var i = 0, len = myStringArray.length; i < len; i++)
-    {
+    for (var i = 0, len = myStringArray.length; i < len; i++) {
         formatedText[i] = i + 1 + ":" + myStringArray[i] + "\r\n";
     }
     var blob = new Blob(formatedText, { type: "text/plain;charset=utf-8" });
     saveAs(blob, filename + ".txt");
 }
 
-function insertYoutubePlayer()
-{
+function insertYoutubePlayer() {
     var divReference = document.getElementById("youtubeVideoBox");
     var parentReference = document.getElementById("youtubeContainer");
     var ifrm = document.createElement('iframe');
     ifrm.width = "853";
     ifrm.height = "480";
     divReference.innerHTML = "";
-    ifrm.setAttribute('src',"https://www.youtube.com/embed/" + requestedVideoUrl);
+    ifrm.setAttribute('src', "https://www.youtube.com/embed/" + requestedVideoUrl);
     divReference.appendChild(ifrm);
     parentReference.style.display = "block";
 }
