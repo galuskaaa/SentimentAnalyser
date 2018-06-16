@@ -7,7 +7,7 @@ $(document).ready(function () {
     $("#proba").click(function (e) {
         requestedVideoUrl = youtube_parser();
         myStringArray = [];
-  
+
         retrieveComments(requestedVideoUrl, nextPT);
     });
 });
@@ -18,8 +18,6 @@ function retrieveComments(requestedVideoUrl, nextPT) {
         type: 'GET',
         url: "https://www.googleapis.com/youtube/v3/commentThreads?pageToken=" + nextPT + "&part=snippet&maxResults=50&videoId=" + requestedVideoUrl + "&key=AIzaSyBb1hVnsuI_8HLkANAt7CCPUmBiygPzAnE",
         success: function (result) {
-            console.log(result);
-
             $('#newList').remove();
             $('#newNaiveList').remove();
             $('#myPleaseWait').modal('show');
@@ -43,10 +41,8 @@ function retrieveComments(requestedVideoUrl, nextPT) {
 
         },
         error: function (xmlhttprequest, textstatus, errorthrown) {
-            console.log("error: " + errorthrown);
+            $('#myModal').modal('show');
         }
-
-
     });
 };
 
@@ -67,6 +63,7 @@ function postComments(myStringArrayP) {
             naiveAnalysis(result);
         },
         error: function (xmlhttprequest, textstatus, errorthrown) {
+            $('#myModal').modal('show');
             alert("error: " + errorthrown);
         }
     });
@@ -86,6 +83,7 @@ function vaderAnalysis(myStringArrayP) {
 
         },
         error: function (xmlhttprequest, textstatus, errorthrown) {
+            $('#myModal').modal('show');
             alert("error: " + errorthrown);
         }
     });
@@ -105,7 +103,7 @@ function naiveAnalysis(myStringArrayP) {
 
         },
         error: function (xmlhttprequest, textstatus, errorthrown) {
-            console.log("error: " + errorthrown);
+            $('#myModal').modal('show');
         }
     });
 }
@@ -234,7 +232,7 @@ $(document).ready(function () {
                 likeCounter = result.items[0].statistics.likeCount;
             },
             error: function (xmlhttprequest, textstatus, errorthrown) {
-                console.log("error: " + errorthrown);
+                $('#myModal').modal('show');
             }
         });
     });
