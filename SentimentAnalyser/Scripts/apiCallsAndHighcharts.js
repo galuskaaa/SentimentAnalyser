@@ -93,7 +93,7 @@ function naiveAnalysis(myStringArrayP) {
     $.ajax({
         type: "POST",
         contentType: "application/json; charset=utf-8",
-        url: "NaiveSentiment/naiveResult",
+        url: "NaiveSentimentController/naiveResult",
         datatype: "json",
         data: JSON.stringify(myStringArrayP),
         traditional: true,
