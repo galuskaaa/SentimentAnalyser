@@ -23,7 +23,8 @@ namespace SentimentAnalyser.Helper
 
         public NaiveAnalysisAction()
         {
-            var filePath = @"D:\Licens\SentimentAnalyser\SentimentAnalyser\AFINN-111.txt";
+            var filePath = HttpContext.Current.Server.MapPath("~/Text_Files/AFINN-111.txt");
+            //var filePath = @"D:\Licens\SentimentAnalyser\SentimentAnalyser\AFINN-111.txt";
             wordDictionary = new Dictionary<string, int>();
             using (var file = new StreamReader(filePath))
             {

@@ -397,6 +397,7 @@
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\apiCallsAndHighcharts.js" />
     <Content Include="Scripts\_references.js" />
+    <Content Include="Text_Files\AFINN-111.txt" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
